@@ -1,5 +1,4 @@
 ﻿using Application.DTO;
-using Application.Features.Balance.Query;
 using Application.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Azure.Core;
 using System.Net;
 using Microsoft.Extensions.Hosting;
+using Application.Features.Account.Query;
 
 namespace API.Controllers
 {
@@ -51,6 +51,14 @@ namespace API.Controllers
         {
             var result = await _mediator.Send(new GetUserBalanceByIdQuery() { UserId = CurrentUserId });
             return Ok(result);
+
+        }
+
+        [Route("exception")]
+        [HttpGet]
+        public  Task<IActionResult> ThrowException()
+        {
+            throw new Exception("some exception occure");
 
         }
     }

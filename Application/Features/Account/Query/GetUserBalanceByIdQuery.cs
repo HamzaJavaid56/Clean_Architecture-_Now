@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.Balance.Query
+namespace Application.Features.Account.Query
 {
     public class GetUserBalanceByIdQuery : IRequest<ApiResponse<GetUserBalanceResponse>>
     {
@@ -23,14 +23,15 @@ namespace Application.Features.Balance.Query
         private readonly IApplicationDbContext _context;
         public GetUserBalanceByIdQueryHandler(IApplicationDbContext context)
         {
-            _context= context;
+            _context = context;
 
-       }
+        }
         public async Task<ApiResponse<GetUserBalanceResponse>> Handle(GetUserBalanceByIdQuery request, CancellationToken cancellationToken)
         {
-           var respsone= await _context.UserAccounts.Where(x => x.UserId == request.UserId).FirstOrDefaultAsync();
-            var userBalance = new GetUserBalanceResponse() {
-                Balance=respsone.Balance,
+            var respsone = await _context.UserAccounts.Where(x => x.UserId == request.UserId).FirstOrDefaultAsync();
+            var userBalance = new GetUserBalanceResponse()
+            {
+                Balance = respsone.Balance,
             };
             return new ApiResponse<GetUserBalanceResponse>(userBalance);
         }

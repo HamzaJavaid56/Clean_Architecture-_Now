@@ -8,6 +8,7 @@ namespace API.Middlewares
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+
         public ErrorHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -22,6 +23,7 @@ namespace API.Middlewares
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
+                 LogExceptionToFile(ex);
             }
         }
 
@@ -37,14 +39,11 @@ namespace API.Middlewares
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     responseModel.Message = apiException.Message;
                     // Can Implemnet SerialLog . For AWS log in cloudwatch
-                    LogExceptionToFile(exception);
-
                     break;
 
 
                 default:
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    LogExceptionToFile(exception);
                     break;
             }
 
@@ -52,10 +51,11 @@ namespace API.Middlewares
             return  response.WriteAsync(result);
              
         }
-        private void LogExceptionToFile(Exception exception)
+ 
+        private  void LogExceptionToFile(Exception exception)
         {
             var logFileName = "exceptions.log"; // Specify the name of your log file
-            var logPath = Path.Combine(Directory.GetCurrentDirectory(), "Logs", logFileName); // Specify the path to your log file
+            var logPath =  Path.Combine(Directory.GetCurrentDirectory(), "Logs", logFileName); // Specify the path to your log file
 
             using (var writer = new StreamWriter(logPath, true))
             {
